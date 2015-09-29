@@ -1,7 +1,9 @@
 #include <iostream>
 
-int main(){
-	std::cout << "Hello again, world.\n";
-	std::cout << "I love what you've done with your hair.\n";
+int main(int argc, char *argv[]){
+	std::cout << argc << " arguments found.\n";
+	for (int i = 0; i < argc; ++i){
+		std::cout << argv[i] << "\n";
+	}
 	return 0;
 }
