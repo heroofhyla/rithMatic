@@ -151,20 +151,40 @@ void addProblems(char oper, std::vector<std::string> &problems, bool latexMode, 
 			startval = i;
 		}
 		for (int k = startval; k < 10; ++k){
-			ss.str("");
-			if (latexMode){
-				ss << "\\begin{tabular}{cc}\n" <<
-					"& " << (i*k) << " \\\\\n" <<
-					stroper << " & " << k << " \\\\\n" <<
-					"\\hline\n" <<
-					" & \\\\\n" <<
-					" & \\\\\n" <<
-					"\\end{tabular}\\quad\n";
+			if (k == 0 && oper == '/'){
+				//skip div by zero
+			}else{
+				ss.str("");
+				if (latexMode){	
+					if (oper != '/'){
+						ss << "\\begin{tabular}{cc}\n" <<
+							"& " << i << " \\\\\n" <<
+							stroper << " & " << k << " \\\\\n" <<
+							"\\hline\n" <<
+							" & \\\\\n" <<
+							" & \\\\\n" <<
+							"\\end{tabular}\\quad\n";
+					}else{
+						ss << "\\begin{tabular}{cc}\n" <<
+							"& " << (i*k) << " \\\\\n" <<
+							stroper << " & " << k << " \\\\\n" <<
+							"\\hline\n" <<
+							" & \\\\\n" <<
+							" & \\\\\n" <<
+							"\\end{tabular}\\quad\n";
+					}
+
+
+				}
+				else{
+					if (oper != '/'){
+						ss << i << oper << k << "=__ ";
+					}else{
+						ss << (i*k) << oper << k << "=__ ";
+					}
+				}
+				problems.push_back(ss.str());
 			}
-			else{
-				ss << i << oper << k << "=__ ";
-			}
-			problems.push_back(ss.str());
 		}
 	}
 }
