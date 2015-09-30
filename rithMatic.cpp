@@ -14,6 +14,7 @@ void addProblems(char, std::vector<std::string>&, bool);
 int main(int argc, char *argv[]){
 	std::ofstream fileOut;
 	int arg;
+	int columns = 10;
 	bool latexMode = false;
 	char *fileDest;
 	bool fileMode = false;
@@ -23,8 +24,11 @@ int main(int argc, char *argv[]){
 	bool multiplication = false;
 	bool division = false;
 	std::srand(std::time(0));
-	while ((arg = getopt(argc, argv, "asmdrlo:")) != EOF){
+	while ((arg = getopt(argc, argv, "c:asmdrlo:")) != EOF){
 		switch (arg){
+			case 'c':
+				columns = atoi(optarg);
+			break;
 			case 'l':
 				latexMode = true;
 			break;
@@ -83,9 +87,11 @@ int main(int argc, char *argv[]){
 					"\\usepackage[margin=.75in]{geometry}\n" <<
 					"\\begin{document}\n";
 		}
-		for (int i = 0; i < problems.size()/10; ++i){
-			for (int k = 0; k < 10; ++k){
-				fileOut << problems[i*10 + k];
+		for (int i = 0; i < ceil(problems.size()/double(columns)); ++i){
+			for (int k = 0; k < columns; ++k){
+				if (i*columns + k < problems.size()){
+					fileOut << problems[i*columns + k];
+				}
 			}
 			fileOut << "\n";
 		}
@@ -100,9 +106,11 @@ int main(int argc, char *argv[]){
 					"\\begin{document}\n" <<
 					"\\noindent\n";
 		}
-		for (int i = 0; i < problems.size()/10; ++i){
-			for (int k = 0; k < 10; ++k){
-				std::cout << problems[i*10 + k];
+		for (int i = 0; i < ceil(problems.size()/double(columns)); ++i){
+			for (int k = 0; k < columns; ++k){
+				if (i*columns + k < problems.size()){
+					std::cout << problems[i*columns + k];
+				}
 			}
 			std::cout << "\n";
 		}
