@@ -10,7 +10,7 @@
 #include <fstream>
 #include <vector>
 
-void addProblems(char, std::vector<std::string>&, bool);
+void addProblems(char, std::vector<std::string>&, bool, bool);
 int main(int argc, char *argv[]){
 	std::ofstream fileOut;
 	int arg;
@@ -23,69 +23,73 @@ int main(int argc, char *argv[]){
 	bool subtraction = false;
 	bool multiplication = false;
 	bool division = false;
+	bool uniqueMode = false;
 	std::srand(std::time(0));
-	while ((arg = getopt(argc, argv, "c:asmdrlo:")) != EOF){
+	while ((arg = getopt(argc, argv, "uc:asmdrlo:")) != EOF){
 		switch (arg){
 			case 'c':
 				columns = atoi(optarg);
-			break;
+				break;
+			case 'u':
+				uniqueMode = true;
+				break;
 			case 'l':
 				latexMode = true;
-			break;
+				break;
 			case 'o':
 				fileMode = true;
 				fileDest = optarg;
-			break;
+				break;
 			case 'r':
 				randomize = true;
-			break;
+				break;
 			case 'a':
 				addition = true;
-			break;
+				break;
 			case 's':
 				subtraction = true;
-			break;
+				break;
 			case 'm':
 				multiplication = true;
-			break;
+				break;
 			case 'd':
 				division = true;
-			break;
+				break;
 		}
-		
+
 	}
-	
+
 	if (!addition && !subtraction && !multiplication && !division){
 		addition = true;
 	}
-	
+
 	std::vector<std::string> problems;
 	if (addition){
-		addProblems('+', problems, latexMode);
+		addProblems('+', problems, latexMode, uniqueMode);
 	}
-	
+
 	if (subtraction){
-		addProblems('-', problems, latexMode);
+		addProblems('-', problems, latexMode, uniqueMode);
 	}
-	
+
 	if (multiplication){
-		addProblems('x', problems, latexMode);
+		addProblems('x', problems, latexMode, uniqueMode);
 	}
-	
+
 	if (division){
-		addProblems('/', problems, latexMode);
+		addProblems('/', problems, latexMode, uniqueMode);
 	}
-	
+
 	if (randomize){
 		random_shuffle(problems.begin(), problems.end());
 	}
-	
+
 	if (fileMode){
 		fileOut.open(fileDest);
 		if (latexMode){
-		fileOut << "\\documentclass{article}\n" <<
-					"\\usepackage[margin=.75in]{geometry}\n" <<
-					"\\begin{document}\n";
+			fileOut << "\\documentclass{article}\n" <<
+				"\\usepackage[margin=.75in]{geometry}\n" <<
+				"\\begin{document}\n";
 		}
 		for (int i = 0; i < ceil(problems.size()/double(columns)); ++i){
 			for (int k = 0; k < columns; ++k){
@@ -102,9 +106,9 @@ int main(int argc, char *argv[]){
 	}else{
 		if (latexMode){
 			std::cout << "\\documentclass{article}\n" <<
-					"\\usepackage{fullpage}\n" <<
-					"\\begin{document}\n" <<
-					"\\noindent\n";
+				"\\usepackage{fullpage}\n" <<
+				"\\begin{document}\n" <<
+				"\\noindent\n";
 		}
 		for (int i = 0; i < ceil(problems.size()/double(columns)); ++i){
 			for (int k = 0; k < columns; ++k){
@@ -118,51 +122,44 @@ int main(int argc, char *argv[]){
 			std::cout << "\\end{document}";
 		}
 	}
-	
+
 	return 0;
 }
 
-void addProblems(char oper, std::vector<std::string> &problems, bool latexMode){
+void addProblems(char oper, std::vector<std::string> &problems, bool latexMode, bool uniqueMode){
 	std::stringstream ss;
 	std::string stroper = "$+$";
 	if (latexMode){
 		switch (oper){
 			case '+':
 				stroper = "$+$";
-			break;
+				break;
 			case '-':
 				stroper = "$-$";
-			break;
+				break;
 			case 'x':
 				stroper = "$\\times$";
-			break;
+				break;
 			case '/':
 				stroper = "$\\div$";
-			break;
+				break;
 		}
 	}
 	for (int i = 0; i < 10; ++i){
-		for (int k = 0; k < 10; ++k){
+		int startval = 0;
+		if (uniqueMode){
+			startval = i;
+		}
+		for (int k = startval; k < 10; ++k){
 			ss.str("");
 			if (latexMode){
-			
-				if (oper != '/'){
-					ss << "\\begin{tabular}{cc}\n" <<
-							"& " << i << " \\\\\n" <<
-							stroper << " & " << k << " \\\\\n" <<
-							"\\hline\n" <<
-							" & \\\\\n" <<
-							" & \\\\\n" <<
-							"\\end{tabular}\\quad\n";
-				}else{
-					ss << "\\begin{tabular}{cc}\n" <<
-							"& " << (i*k) << " \\\\\n" <<
-							stroper << " & " << k << " \\\\\n" <<
-							"\\hline\n" <<
-							" & \\\\\n" <<
-							" & \\\\\n" <<
-							"\\end{tabular}\\quad\n";
-				}
+				ss << "\\begin{tabular}{cc}\n" <<
+					"& " << (i*k) << " \\\\\n" <<
+					stroper << " & " << k << " \\\\\n" <<
+					"\\hline\n" <<
+					" & \\\\\n" <<
+					" & \\\\\n" <<
+					"\\end{tabular}\\quad\n";
 			}
 			else{
 				ss << i << oper << k << "=__ ";
