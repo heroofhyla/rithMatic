@@ -1,2 +1,5 @@
 *.out
-*.cpp~
+*.*~
+*.log
+*.aux
+*.pdf
