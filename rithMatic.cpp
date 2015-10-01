@@ -24,9 +24,13 @@ int main(int argc, char *argv[]){
 	bool multiplication = false;
 	bool division = false;
 	bool uniqueMode = false;
+	bool showHeader = false;
 	std::srand(std::time(0));
-	while ((arg = getopt(argc, argv, "uc:asmdrlo:")) != EOF){
+	while ((arg = getopt(argc, argv, "huc:asmdrlo:")) != EOF){
 		switch (arg){
+			case 'h':
+				showHeader = true;
+			break;
 			case 'c':
 				columns = atoi(optarg);
 				break;
@@ -91,6 +95,15 @@ int main(int argc, char *argv[]){
 				"\\usepackage[margin=.75in]{geometry}\n" <<
 				"\\begin{document}\n";
 		}
+		if (showHeader){
+			if (latexMode){
+				fileOut << "Name\\underline{\\hspace{2in}}\n\n\\medskip\n"<<
+							"Date\\underline{\\hspace{1.5in}}\n\n\\medskip\n";
+			}else{
+				fileOut << "Name___________________\n" <<
+						"Date___________________\n";
+			}
+		}
 		for (int i = 0; i < ceil(problems.size()/double(columns)); ++i){
 			for (int k = 0; k < columns; ++k){
 				if (i*columns + k < problems.size()){
@@ -109,6 +122,15 @@ int main(int argc, char *argv[]){
 				"\\usepackage{fullpage}\n" <<
 				"\\begin{document}\n" <<
 				"\\noindent\n";
+		}
+		if (showHeader){
+			if (latexMode){
+				std::cout << "Name\\underline{\\hspace{2in}}\n\n\\medskip\n"<<
+							"Date\\underline{\\hspace{1.5in}}\n\n\\medskip\n";
+			}else{
+				std::cout << "Name___________________\n" <<
+						"Date___________________\n";
+			}
 		}
 		for (int i = 0; i < ceil(problems.size()/double(columns)); ++i){
 			for (int k = 0; k < columns; ++k){
