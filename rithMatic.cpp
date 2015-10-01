@@ -30,7 +30,7 @@ int main(int argc, char *argv[]){
 		switch (arg){
 			case 'h':
 				showHeader = true;
-			break;
+				break;
 			case 'c':
 				columns = atoi(optarg);
 				break;
@@ -98,10 +98,10 @@ int main(int argc, char *argv[]){
 		if (showHeader){
 			if (latexMode){
 				fileOut << "Name\\underline{\\hspace{2in}}\n\n\\medskip\n"<<
-							"Date\\underline{\\hspace{1.5in}}\n\n\\medskip\n";
+					"Date\\underline{\\hspace{1.5in}}\n\n\\medskip\n";
 			}else{
 				fileOut << "Name___________________\n" <<
-						"Date___________________\n";
+					"Date___________________\n";
 			}
 		}
 		for (int i = 0; i < ceil(problems.size()/double(columns)); ++i){
@@ -126,10 +126,10 @@ int main(int argc, char *argv[]){
 		if (showHeader){
 			if (latexMode){
 				std::cout << "Name\\underline{\\hspace{2in}}\n\n\\medskip\n"<<
-							"Date\\underline{\\hspace{1.5in}}\n\n\\medskip\n";
+					"Date\\underline{\\hspace{1.5in}}\n\n\\medskip\n";
 			}else{
 				std::cout << "Name___________________\n" <<
-						"Date___________________\n";
+					"Date___________________\n";
 			}
 		}
 		for (int i = 0; i < ceil(problems.size()/double(columns)); ++i){
@@ -187,13 +187,24 @@ void addProblems(char oper, std::vector<std::string> &problems, bool latexMode, 
 							" & \\\\\n" <<
 							"\\end{tabular}\\quad\n";
 					}else{
-						ss << "\\begin{tabular}{cc}\n" <<
-							"& " << (i*k) << " \\\\\n" <<
-							stroper << " & " << k << " \\\\\n" <<
-							"\\hline\n" <<
-							" & \\\\\n" <<
-							" & \\\\\n" <<
-							"\\end{tabular}\\quad\n";
+						if ((i*k)/10 == 0){
+							ss << "\\begin{tabular}{cc}\n" <<
+								" & " << (i*k) << " \\\\\n" <<
+								stroper << " & " << k << " \\\\\n" <<
+								"\\hline\n" <<
+								" & \\\\\n" <<
+								" & \\\\\n" <<
+								"\\end{tabular}\\quad\n";
+
+						}else{
+							ss << "\\begin{tabular}{cc}\n" <<
+								(i*k)/10 << "& " << (i*k)%10 << " \\\\\n" <<
+								stroper << " & " << k << " \\\\\n" <<
+								"\\hline\n" <<
+								" & \\\\\n" <<
+								" & \\\\\n" <<
+								"\\end{tabular}\\quad\n";
+						}
 					}
 
 
