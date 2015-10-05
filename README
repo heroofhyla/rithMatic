@@ -18,7 +18,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>
 rithMatic is a program that generates arithmetic worksheets. The 
 worksheets can cover addition, subtraction, multiplication, and 
 division. The types of problems presented depend on the command line 
-arguments, as detailed below.
+arguments, as detailed below. If none of the operator flags (-a, -s,
+-m, -d) are set, -a is implied.
 
 -a	ADDITION
 rithMatic generates all possible problems involving the addition of 2
@@ -80,7 +81,7 @@ saved to "addsubset1.tex" and can later be rendered using a program
 like pdflatex.
 
 ./rithMatic
-The default usage. Generates every single digit math problem, and
+The default usage. Generates every single digit addition problem, and
 outputs them in order to the command prompt in plain text. The output
 is organized into 10 columns.
 
