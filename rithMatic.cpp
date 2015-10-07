@@ -27,6 +27,7 @@
 #include <cstdlib>
 #include <fstream>
 #include <vector>
+#include "engstr.h"
 
 void addProblems(char, std::vector<std::string>&, bool, bool, bool);
 std::string genProblem(char, int, int, bool);
@@ -35,6 +36,9 @@ int main(int argc, char *argv[]){
 	std::ofstream fileOut;
 	int arg;
 	int columns = 10;
+	std::string startstring = "";
+	std::string headerstring = "";
+	std::string endstring = "";
 	bool latexMode = false;
 	char *fileDest;
 	bool fileMode = false;
@@ -87,6 +91,15 @@ int main(int argc, char *argv[]){
 
 	}
 
+	if (showHeader){
+		if (latexMode){
+			startstring = engstr::latexStart;
+			headerstring = engstr::latexHeader;
+			endstring = engstr::latexEnd;
+		}else{
+			headerstring = engstr::ptHeader;
+		}
+	}
 	if (!addition && !subtraction && !multiplication && !division){
 		addition = true;
 	}
@@ -115,21 +128,9 @@ int main(int argc, char *argv[]){
 	if (fileMode){
 		fileOut.open(fileDest);
 	}
-	if (latexMode){
-		fileOut << "\\documentclass{article}\n" <<
-			"\\usepackage[margin=.75in]{geometry}\n" <<
-			"\\begin{document}\n";
-	}
 	std::ostream &outstream = (fileMode)?fileOut:std::cout;
-	if (showHeader){
-		if (latexMode){
-			outstream << "Name\\underline{\\hspace{2in}}\n\n\\medskip\n"<<
-				"Date\\underline{\\hspace{1.5in}}\n\n\\medskip\n";
-		}else{
-			outstream << "Name___________________\n" <<
-				"Date___________________\n";
-		}
-	}
+	outstream << startstring;
+	outstream << headerstring;
 	for (int i = 0; i < ceil(problems.size()/double(columns)); ++i){
 		for (int k = 0; k < columns; ++k){
 			if (i*columns + k < problems.size()){
@@ -138,9 +139,7 @@ int main(int argc, char *argv[]){
 		}
 		outstream << "\n";
 	}
-	if (latexMode){
-		outstream << "\\end{document}";
-	}
+	outstream << endstring;
 	if (fileMode){
 		fileOut.close();
 	}
