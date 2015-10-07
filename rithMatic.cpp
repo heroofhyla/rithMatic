@@ -112,61 +112,36 @@ int main(int argc, char *argv[]){
 
 	if (fileMode){
 		fileOut.open(fileDest);
+	}
+	if (latexMode){
+		fileOut << "\\documentclass{article}\n" <<
+			"\\usepackage[margin=.75in]{geometry}\n" <<
+			"\\begin{document}\n";
+	}
+	std::ostream &outstream = (fileMode)?fileOut:std::cout;
+	if (showHeader){
 		if (latexMode){
-			fileOut << "\\documentclass{article}\n" <<
-				"\\usepackage[margin=.75in]{geometry}\n" <<
-				"\\begin{document}\n";
-		}
-		if (showHeader){
-			if (latexMode){
-				fileOut << "Name\\underline{\\hspace{2in}}\n\n\\medskip\n"<<
-					"Date\\underline{\\hspace{1.5in}}\n\n\\medskip\n";
-			}else{
-				fileOut << "Name___________________\n" <<
-					"Date___________________\n";
-			}
-		}
-		for (int i = 0; i < ceil(problems.size()/double(columns)); ++i){
-			for (int k = 0; k < columns; ++k){
-				if (i*columns + k < problems.size()){
-					fileOut << problems[i*columns + k];
-				}
-			}
-			fileOut << "\n";
-		}
-		if (latexMode){
-			fileOut << "\\end{document}";
-		}
-		fileOut.close();
-	}else{
-		if (latexMode){
-			std::cout << "\\documentclass{article}\n" <<
-				"\\usepackage{fullpage}\n" <<
-				"\\begin{document}\n" <<
-				"\\noindent\n";
-		}
-		if (showHeader){
-			if (latexMode){
-				std::cout << "Name\\underline{\\hspace{2in}}\n\n\\medskip\n"<<
-					"Date\\underline{\\hspace{1.5in}}\n\n\\medskip\n";
-			}else{
-				std::cout << "Name___________________\n" <<
-					"Date___________________\n";
-			}
-		}
-		for (int i = 0; i < ceil(problems.size()/double(columns)); ++i){
-			for (int k = 0; k < columns; ++k){
-				if (i*columns + k < problems.size()){
-					std::cout << problems[i*columns + k];
-				}
-			}
-			std::cout << "\n";
-		}
-		if (latexMode){
-			std::cout << "\\end{document}";
+			outstream << "Name\\underline{\\hspace{2in}}\n\n\\medskip\n"<<
+				"Date\\underline{\\hspace{1.5in}}\n\n\\medskip\n";
+		}else{
+			outstream << "Name___________________\n" <<
+				"Date___________________\n";
 		}
 	}
-
+	for (int i = 0; i < ceil(problems.size()/double(columns)); ++i){
+		for (int k = 0; k < columns; ++k){
+			if (i*columns + k < problems.size()){
+				outstream << problems[i*columns + k];
+			}
+		}
+		outstream << "\n";
+	}
+	if (latexMode){
+		outstream << "\\end{document}";
+	}
+	if (fileMode){
+		fileOut.close();
+	}
 	return 0;
 }
 
