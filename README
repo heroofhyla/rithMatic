@@ -46,6 +46,9 @@ negative results. A future flag may change this. Because of their
 format, division problems are naturally unique. This flag will make no
 difference on a set of only division problems.
 
+-n NON-NEGATIVE Subtraction problems are rearranged such that the
+larger number is always on top.
+
 -r RANDOMIZE Problems are output in a random order.
 
 -l	LaTeX MODE The output is formatted for future rendering using

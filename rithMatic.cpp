@@ -13,7 +13,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 
 #include <iostream>
 #include <unistd.h>
@@ -27,7 +27,7 @@
 #include <fstream>
 #include <vector>
 
-void addProblems(char, std::vector<std::string>&, bool, bool);
+void addProblems(char, std::vector<std::string>&, bool, bool, bool);
 
 int main(int argc, char *argv[]){
 	std::ofstream fileOut;
@@ -43,9 +43,13 @@ int main(int argc, char *argv[]){
 	bool division = false;
 	bool uniqueMode = false;
 	bool showHeader = false;
+	bool noNegatives = false;
 	std::srand(std::time(0));
-	while ((arg = getopt(argc, argv, "huc:asmdrlo:")) != EOF){
+	while ((arg = getopt(argc, argv, "nhuc:asmdrlo:")) != EOF){
 		switch (arg){
+			case 'n':
+				noNegatives = true;
+				break;
 			case 'h':
 				showHeader = true;
 				break;
@@ -87,19 +91,19 @@ int main(int argc, char *argv[]){
 
 	std::vector<std::string> problems;
 	if (addition){
-		addProblems('+', problems, latexMode, uniqueMode);
+		addProblems('+', problems, latexMode, uniqueMode, noNegatives);
 	}
 
 	if (subtraction){
-		addProblems('-', problems, latexMode, uniqueMode);
+		addProblems('-', problems, latexMode, uniqueMode, noNegatives);
 	}
 
 	if (multiplication){
-		addProblems('x', problems, latexMode, uniqueMode);
+		addProblems('x', problems, latexMode, uniqueMode, noNegatives);
 	}
 
 	if (division){
-		addProblems('/', problems, latexMode, uniqueMode);
+		addProblems('/', problems, latexMode, uniqueMode, noNegatives);
 	}
 
 	if (randomize){
@@ -166,7 +170,7 @@ int main(int argc, char *argv[]){
 	return 0;
 }
 
-void addProblems(char oper, std::vector<std::string> &problems, bool latexMode, bool uniqueMode){
+void addProblems(char oper, std::vector<std::string> &problems, bool latexMode, bool uniqueMode, bool noNegatives){
 	std::stringstream ss;
 	std::string stroper = "$+$";
 	if (latexMode){
@@ -194,45 +198,40 @@ void addProblems(char oper, std::vector<std::string> &problems, bool latexMode, 
 			if (k == 0 && oper == '/'){
 				//skip div by zero
 			}else{
+				int t = i;
+				int b = k;
+
+				if (oper == '/'){
+					t *= b;
+				}
+
+				if (oper == '-' && noNegatives && t < b){
+					int tmp = t;
+					t = b;
+					b = tmp;
+				}
 				ss.str("");
 				if (latexMode){	
-					if (oper != '/'){
+					if (t < 10){
 						ss << "\\begin{tabular}{cc}\n" <<
-							"& " << i << " \\\\\n" <<
-							stroper << " & " << k << " \\\\\n" <<
+							" & " << (t) << " \\\\\n" <<
+							stroper << " & " << b << " \\\\\n" <<
 							"\\hline\n" <<
 							" & \\\\\n" <<
 							" & \\\\\n" <<
 							"\\end{tabular}\\quad\n";
+
 					}else{
-						if ((i*k)/10 == 0){
-							ss << "\\begin{tabular}{cc}\n" <<
-								" & " << (i*k) << " \\\\\n" <<
-								stroper << " & " << k << " \\\\\n" <<
-								"\\hline\n" <<
-								" & \\\\\n" <<
-								" & \\\\\n" <<
-								"\\end{tabular}\\quad\n";
-
-						}else{
-							ss << "\\begin{tabular}{cc}\n" <<
-								(i*k)/10 << "& " << (i*k)%10 << " \\\\\n" <<
-								stroper << " & " << k << " \\\\\n" <<
-								"\\hline\n" <<
-								" & \\\\\n" <<
-								" & \\\\\n" <<
-								"\\end{tabular}\\quad\n";
-						}
+						ss << "\\begin{tabular}{cc}\n" <<
+							t/10 << "& " << t%10 << " \\\\\n" <<
+							stroper << " & " << b << " \\\\\n" <<
+							"\\hline\n" <<
+							" & \\\\\n" <<
+							" & \\\\\n" <<
+							"\\end{tabular}\\quad\n";
 					}
-
-
-				}
-				else{
-					if (oper != '/'){
-						ss << i << oper << k << "=__ ";
-					}else{
-						ss << (i*k) << oper << k << "=__ ";
-					}
+				}else{
+					ss << t << oper << b << "=__ ";
 				}
 				problems.push_back(ss.str());
 			}
