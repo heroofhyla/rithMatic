@@ -29,6 +29,7 @@
 #include <vector>
 
 void addProblems(char, std::vector<std::string>&, bool, bool, bool);
+std::string genProblem(char, int, int, bool);
 
 int main(int argc, char *argv[]){
 	std::ofstream fileOut;
@@ -147,24 +148,6 @@ int main(int argc, char *argv[]){
 }
 
 void addProblems(char oper, std::vector<std::string> &problems, bool latexMode, bool uniqueMode, bool noNegatives){
-	std::stringstream ss;
-	std::string stroper = "$+$";
-	if (latexMode){
-		switch (oper){
-			case '+':
-				stroper = "$+$";
-				break;
-			case '-':
-				stroper = "$-$";
-				break;
-			case 'x':
-				stroper = "$\\times$";
-				break;
-			case '/':
-				stroper = "$\\div$";
-				break;
-		}
-	}
 	for (int i = 0; i < 10; ++i){
 		int startval = 0;
 		if (uniqueMode && oper != '/'){
@@ -186,31 +169,53 @@ void addProblems(char oper, std::vector<std::string> &problems, bool latexMode, 
 					t = b;
 					b = tmp;
 				}
-				ss.str("");
-				if (latexMode){	
-					if (t < 10){
-						ss << "\\begin{tabular}{cc}\n" <<
-							" & " << (t) << " \\\\\n" <<
-							stroper << " & " << b << " \\\\\n" <<
-							"\\hline\n" <<
-							" & \\\\\n" <<
-							" & \\\\\n" <<
-							"\\end{tabular}\\quad\n";
-
-					}else{
-						ss << "\\begin{tabular}{cc}\n" <<
-							t/10 << "& " << t%10 << " \\\\\n" <<
-							stroper << " & " << b << " \\\\\n" <<
-							"\\hline\n" <<
-							" & \\\\\n" <<
-							" & \\\\\n" <<
-							"\\end{tabular}\\quad\n";
-					}
-				}else{
-					ss << t << oper << b << "=__ ";
-				}
-				problems.push_back(ss.str());
+				problems.push_back(genProblem(oper, i, b, latexMode).c_str());
 			}
 		}
 	}
+}
+
+std::string genProblem(char oper, int t, int b, bool latexMode){
+	std::stringstream ss;
+	ss.str("");
+	if (latexMode){
+		std::string stroper = "$+$";
+		switch (oper){
+			case '+':
+				stroper = "$+$";
+				break;
+			case '-':
+				stroper = "$-$";
+				break;
+			case 'x':
+				stroper = "$\\times$";
+				break;
+			case '/':
+				stroper = "$\\div$";
+				break;
+		}
+
+		if (t < 10){
+			ss << "\\begin{tabular}{cc}\n" <<
+				" & " << (t) << " \\\\\n" <<
+				stroper << " & " << b << " \\\\\n" <<
+				"\\hline\n" <<
+				" & \\\\\n" <<
+				" & \\\\\n" <<
+				"\\end{tabular}\\quad\n";
+
+		}else{
+			ss << "\\begin{tabular}{cc}\n" <<
+				t/10 << "& " << t%10 << " \\\\\n" <<
+				stroper << " & " << b << " \\\\\n" <<
+				"\\hline\n" <<
+				" & \\\\\n" <<
+				" & \\\\\n" <<
+				"\\end{tabular}\\quad\n";
+		}
+	}else{
+		ss << t << oper << b << "=__ ";
+	}
+
+	return ss.str();
 }
