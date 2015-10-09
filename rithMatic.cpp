@@ -66,6 +66,8 @@ int main(int argc, char *argv[]){
 				uniqueMode = true;
 				break;
 			case 'l':
+				startstring = engstr::latexStart;
+				endstring = engstr::latexEnd;
 				latexMode = true;
 				break;
 			case 'o':
@@ -93,9 +95,7 @@ int main(int argc, char *argv[]){
 
 	if (showHeader){
 		if (latexMode){
-			startstring = engstr::latexStart;
 			headerstring = engstr::latexHeader;
-			endstring = engstr::latexEnd;
 		}else{
 			headerstring = engstr::ptHeader;
 		}
