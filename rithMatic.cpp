@@ -29,9 +29,9 @@
 #include <vector>
 #include "engstr.h"
 
-void addProblems(char, std::vector<std::string>&, bool, bool);
-std::string genProblem(char, int, int, bool);
-
+void addProblems(char oper, std::vector<std::string> &problems, bool latexMode, bool uniqueMode);
+std::string genProblem(char oper, int t, int b, bool latexMode);
+std::string getstroper(char oper, bool latexMode);
 int main(int argc, char *argv[]){
 	std::ofstream fileOut;
 	int arg;
@@ -43,13 +43,10 @@ int main(int argc, char *argv[]){
 	char *fileDest;
 	bool fileMode = false;
 	bool randomize = false;
-	bool addition = false;
-	bool subtraction = false;
-	bool multiplication = false;
-	bool division = false;
 	bool uniqueMode = false;
 	bool showHeader = false;
 	std::srand(std::time(0));
+	std::vector<char> operators;
 	while ((arg = getopt(argc, argv, "huc:asmdrlo:")) != EOF){
 		switch (arg){
 			case 'h':
@@ -74,16 +71,16 @@ int main(int argc, char *argv[]){
 				randomize = true;
 				break;
 			case 'a':
-				addition = true;
+				operators.push_back('+');
 				break;
 			case 's':
-				subtraction = true;
+				operators.push_back('-');
 				break;
 			case 'm':
-				multiplication = true;
+				operators.push_back('*');
 				break;
 			case 'd':
-				division = true;
+				operators.push_back('/');
 				break;
 		}
 
@@ -96,27 +93,13 @@ int main(int argc, char *argv[]){
 			headerstring = engstr::ptHeader;
 		}
 	}
-	if (!addition && !subtraction && !multiplication && !division){
-		addition = true;
+	if (operators.size() == 0){
+		operators.push_back('+');
 	}
-
 	std::vector<std::string> problems;
-	if (addition){
-		addProblems('+', problems, latexMode, uniqueMode);
+	for (int i = 0; i < operators.size(); ++i){
+		addProblems(operators[i],problems,latexMode,uniqueMode);
 	}
-
-	if (subtraction){
-		addProblems('-', problems, latexMode, uniqueMode);
-	}
-
-	if (multiplication){
-		addProblems('x', problems, latexMode, uniqueMode);
-	}
-
-	if (division){
-		addProblems('/', problems, latexMode, uniqueMode);
-	}
-
 	if (randomize){
 		random_shuffle(problems.begin(), problems.end());
 	}
@@ -160,23 +143,8 @@ void addProblems(char oper, std::vector<std::string> &problems, bool latexMode,
 std::string genProblem(char oper, int t, int b, bool latexMode)
 {
 	std::stringstream ss;
-	ss.str("");
+	std::string stroper = getstroper(oper, latexMode);
 	if (latexMode){
-		std::string stroper = "$+$";
-		switch (oper){
-			case '+':
-				stroper = "$+$";
-				break;
-			case '-':
-				stroper = "$-$";
-				break;
-			case 'x':
-				stroper = "$\\times$";
-				break;
-			case '/':
-				stroper = "$\\div$";
-				break;
-		}
 
 		if (t < 10){
 			ss << "\\begin{tabular}{cc}\n" <<
@@ -201,4 +169,30 @@ std::string genProblem(char oper, int t, int b, bool latexMode)
 	}
 
 	return ss.str();
+}
+
+std::string getstroper(char oper, bool latexMode){
+	std::string stroper;
+	stroper = oper;
+
+	if (latexMode){
+		switch (oper){
+			case '+':
+				stroper = "$+$";
+				break;
+			case '-':
+				stroper = "$-$";
+				break;
+			case 'x':
+				stroper = "$\\times$";
+				break;
+			case '/':
+				stroper = "$\\div$";
+				break;
+		}
+	}
+
+	return stroper;
+
+
 }
