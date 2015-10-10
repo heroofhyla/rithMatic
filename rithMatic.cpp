@@ -29,7 +29,7 @@
 #include <vector>
 #include "engstr.h"
 
-void addProblems(char, std::vector<std::string>&, bool, bool, bool);
+void addProblems(char, std::vector<std::string>&, bool, bool);
 std::string genProblem(char, int, int, bool);
 
 int main(int argc, char *argv[]){
@@ -49,13 +49,9 @@ int main(int argc, char *argv[]){
 	bool division = false;
 	bool uniqueMode = false;
 	bool showHeader = false;
-	bool noNegatives = false;
 	std::srand(std::time(0));
-	while ((arg = getopt(argc, argv, "nhuc:asmdrlo:")) != EOF){
+	while ((arg = getopt(argc, argv, "huc:asmdrlo:")) != EOF){
 		switch (arg){
-			case 'n':
-				noNegatives = true;
-				break;
 			case 'h':
 				showHeader = true;
 				break;
@@ -106,19 +102,19 @@ int main(int argc, char *argv[]){
 
 	std::vector<std::string> problems;
 	if (addition){
-		addProblems('+', problems, latexMode, uniqueMode, noNegatives);
+		addProblems('+', problems, latexMode, uniqueMode);
 	}
 
 	if (subtraction){
-		addProblems('-', problems, latexMode, uniqueMode, noNegatives);
+		addProblems('-', problems, latexMode, uniqueMode);
 	}
 
 	if (multiplication){
-		addProblems('x', problems, latexMode, uniqueMode, noNegatives);
+		addProblems('x', problems, latexMode, uniqueMode);
 	}
 
 	if (division){
-		addProblems('/', problems, latexMode, uniqueMode, noNegatives);
+		addProblems('/', problems, latexMode, uniqueMode);
 	}
 
 	if (randomize){
@@ -146,35 +142,23 @@ int main(int argc, char *argv[]){
 	return 0;
 }
 
-void addProblems(char oper, std::vector<std::string> &problems, bool latexMode, bool uniqueMode, bool noNegatives){
-	for (int i = 0; i < 10; ++i){
-		int startval = 0;
-		if (uniqueMode && oper != '/'){
-			startval = i;
+void addProblems(char oper, std::vector<std::string> &problems, bool latexMode, 
+		bool uniqueMode)
+{
+	for (int i = 0; i < 100; ++i){
+		int t = i/10;
+		int b = i%10;
+		if (oper == '/'){
+			t *= b;
 		}
-		for (int k = startval; k < 10; ++k){
-			if (k == 0 && oper == '/'){
-				//skip div by zero
-			}else{
-				int t = i;
-				int b = k;
-
-				if (oper == '/'){
-					t *= b;
-				}
-
-				if (oper == '-' && noNegatives && t < b){
-					int tmp = t;
-					t = b;
-					b = tmp;
-				}
-				problems.push_back(genProblem(oper, i, b, latexMode).c_str());
-			}
+		if (!uniqueMode || t < b){
+			problems.push_back(genProblem(oper, t, b, latexMode));	
 		}
 	}
 }
 
-std::string genProblem(char oper, int t, int b, bool latexMode){
+std::string genProblem(char oper, int t, int b, bool latexMode)
+{
 	std::stringstream ss;
 	ss.str("");
 	if (latexMode){
