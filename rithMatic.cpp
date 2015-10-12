@@ -29,7 +29,8 @@
 #include <vector>
 #include "engstr.h"
 
-void addProblems(char oper, std::vector<std::string> &problems, bool latexMode, bool uniqueMode);
+void addProblems(char oper, std::vector<std::string> &problems, bool latexMode,
+                 bool uniqueMode);
 std::string genProblem(char oper, int t, int b, bool latexMode);
 std::string getstroper(char oper, bool latexMode);
 int main(int argc, char *argv[]){
@@ -126,7 +127,7 @@ int main(int argc, char *argv[]){
 }
 
 void addProblems(char oper, std::vector<std::string> &problems, bool latexMode, 
-		bool uniqueMode)
+                 bool uniqueMode)
 {
 	for (int i = 0; i < 100; ++i){
 		int t = i/10;
@@ -135,7 +136,7 @@ void addProblems(char oper, std::vector<std::string> &problems, bool latexMode,
 			t *= b;
 		}
 		if (!uniqueMode || t < b){
-			problems.push_back(genProblem(oper, t, b, latexMode));	
+			problems.push_back(genProblem(oper, t, b, latexMode));
 		}
 	}
 }
@@ -148,21 +149,21 @@ std::string genProblem(char oper, int t, int b, bool latexMode)
 
 		if (t < 10){
 			ss << "\\begin{tabular}{cc}\n" <<
-				" & " << (t) << " \\\\\n" <<
-				stroper << " & " << b << " \\\\\n" <<
-				"\\hline\n" <<
-				" & \\\\\n" <<
-				" & \\\\\n" <<
-				"\\end{tabular}\\quad\n";
+			      " & " << (t) << " \\\\\n" <<
+			      stroper << " & " << b << " \\\\\n" <<
+			      "\\hline\n" <<
+			      " & \\\\\n" <<
+			      " & \\\\\n" <<
+			      "\\end{tabular}\\quad\n";
 
 		}else{
 			ss << "\\begin{tabular}{cc}\n" <<
-				t/10 << "& " << t%10 << " \\\\\n" <<
-				stroper << " & " << b << " \\\\\n" <<
-				"\\hline\n" <<
-				" & \\\\\n" <<
-				" & \\\\\n" <<
-				"\\end{tabular}\\quad\n";
+			      t/10 << "& " << t%10 << " \\\\\n" <<
+			      stroper << " & " << b << " \\\\\n" <<
+			      "\\hline\n" <<
+			      " & \\\\\n" <<
+			      " & \\\\\n" <<
+			      "\\end{tabular}\\quad\n";
 		}
 	}else{
 		ss << t << oper << b << "=__ ";
