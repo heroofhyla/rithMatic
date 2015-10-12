@@ -1,8 +1,10 @@
-all: rithMatic.o
-	clang++ rithMatic.o -o rithMatic
+all: main.o problems.o
+	clang++ main.o problems.o -o rithMatic
 
-rithMatic.o: rithMatic.cpp engstr.h
-	clang++  -c rithMatic.cpp
+main.o: main.cpp engstr.h
+	clang++ -c main.cpp
 
+problems.o: problems.cpp problems.h engstr.h
+	clang++ -c problems.cpp
 clean:
 	rm *.o
