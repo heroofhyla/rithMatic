@@ -1,5 +1,5 @@
 /* rithMatic, an arithmetic problem set generator.  
- *
+ * File "main.cpp"
  * Copyright (C) 2015 Michael Stroud
  *
  * rithMatic is free software: you can redistribute it and/or modify it under
